@@ -1,0 +1,203 @@
+<section class="mx-auto max-w-3xl p-4 sm:p-6">
+  <header class="mb-6">
+    <h1 class="text-xl font-semibold text-slate-900">Mi restaurante</h1>
+    @if (!cargando() && !errorCarga()) {
+      <p class="mt-1 text-sm text-slate-600">
+        @if (esNuevo()) {
+          Aún no tienes un restaurante registrado. Completa los datos para crearlo.
+        } @else {
+          Datos que ven los clientes al reservar.
+        }
+      </p>
+    }
+  </header>
+
+  @if (mensaje(); as texto) {
+    <p role="status" class="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+      {{ texto }}
+    </p>
+  }
+
+  @if (cargando()) {
+    <p class="text-sm text-slate-600">Cargando…</p>
+  } @else if (errorCarga(); as texto) {
+    <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+      <p>{{ texto }}</p>
+      <button
+        type="button"
+        (click)="cargar()"
+        class="mt-3 rounded-md border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-800 hover:bg-red-100"
+      >
+        Reintentar
+      </button>
+    </div>
+  } @else if (mostrarFormulario()) {
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate class="space-y-5">
+      @if (errorGuardado(); as texto) {
+        <p role="alert" class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          {{ texto }}
+        </p>
+      }
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="nombre" class="mb-1 block text-sm font-medium text-slate-700">Nombre</label>
+          <input id="nombre" type="text" formControlName="nombre" [class]="inputCls" />
+          @if (error(form.controls.nombre); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="descripcion" class="mb-1 block text-sm font-medium text-slate-700">
+            Descripción <span class="font-normal text-slate-500">(opcional)</span>
+          </label>
+          <textarea id="descripcion" rows="3" formControlName="descripcion" [class]="inputCls"></textarea>
+          @if (error(form.controls.descripcion); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="direccion" class="mb-1 block text-sm font-medium text-slate-700">Dirección</label>
+          <input id="direccion" type="text" formControlName="direccion" [class]="inputCls" />
+          @if (error(form.controls.direccion); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="ciudad" class="mb-1 block text-sm font-medium text-slate-700">Ciudad</label>
+          <input id="ciudad" type="text" formControlName="ciudad" [class]="inputCls" />
+          @if (error(form.controls.ciudad); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="latitud" class="mb-1 block text-sm font-medium text-slate-700">Latitud</label>
+          <input id="latitud" type="number" step="any" formControlName="latitud" placeholder="10.3910" [class]="inputCls" />
+          @if (error(form.controls.latitud); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="longitud" class="mb-1 block text-sm font-medium text-slate-700">Longitud</label>
+          <input id="longitud" type="number" step="any" formControlName="longitud" placeholder="-75.4794" [class]="inputCls" />
+          @if (error(form.controls.longitud); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="telefono" class="mb-1 block text-sm font-medium text-slate-700">
+            Teléfono <span class="font-normal text-slate-500">(opcional)</span>
+          </label>
+          <input id="telefono" type="tel" formControlName="telefono" [class]="inputCls" />
+          @if (error(form.controls.telefono); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="horaApertura" class="mb-1 block text-sm font-medium text-slate-700">Hora de apertura</label>
+          <input id="horaApertura" type="time" formControlName="horaApertura" [class]="inputCls" />
+          @if (error(form.controls.horaApertura); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="horaCierre" class="mb-1 block text-sm font-medium text-slate-700">Hora de cierre</label>
+          <input id="horaCierre" type="time" formControlName="horaCierre" [class]="inputCls" />
+          @if (error(form.controls.horaCierre); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="duracionReservaMin" class="mb-1 block text-sm font-medium text-slate-700">
+            Duración de la reserva (minutos)
+          </label>
+          <input id="duracionReservaMin" type="number" min="30" max="480" formControlName="duracionReservaMin" [class]="inputCls" />
+          <p class="mt-1 text-xs text-slate-500">Entre 30 y 480 minutos.</p>
+          @if (error(form.controls.duracionReservaMin); as msg) {
+            <p class="mt-1 text-xs text-red-600">{{ msg }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 border-t border-slate-200 pt-4">
+        <button
+          type="submit"
+          [disabled]="guardando()"
+          class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (guardando()) {
+            Guardando…
+          } @else if (esNuevo()) {
+            Crear restaurante
+          } @else {
+            Guardar cambios
+          }
+        </button>
+
+        @if (!esNuevo()) {
+          <button
+            type="button"
+            (click)="cancelar()"
+            [disabled]="guardando()"
+            class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          >
+            Cancelar
+          </button>
+        }
+      </div>
+    </form>
+  } @else {
+    @let r = restaurante()!;
+    <div class="rounded-md border border-slate-200 bg-white">
+      <dl class="divide-y divide-slate-200 text-sm">
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Nombre</dt>
+          <dd class="col-span-2 font-medium text-slate-900">{{ r.nombre }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Descripción</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.descripcion || '—' }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Dirección</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.direccion }}, {{ r.ciudad }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Coordenadas</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.latitud }}, {{ r.longitud }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Teléfono</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.telefono || '—' }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Horario</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.horaApertura.slice(0, 5) }} a {{ r.horaCierre.slice(0, 5) }}</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4 px-4 py-3">
+          <dt class="text-slate-500">Duración de la reserva</dt>
+          <dd class="col-span-2 text-slate-900">{{ r.duracionReservaMin }} min</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="mt-4">
+      <button
+        type="button"
+        (click)="editar()"
+        class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+      >
+        Editar restaurante
+      </button>
+    </div>
+  }
+</section>

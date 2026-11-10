@@ -6,12 +6,19 @@ import { UserHome } from './user-features/components/user-home/user-home';
 import { ReceptionistHome } from './recept-features/components/receptionist-home/receptionist-home';
 import { Unauthorized} from './components/unauthorized/unauthorized';
 import { Login } from './components/login/login';
+import { MyRestaurant } from './admin-features/components/my-restaurant/my-restaurant';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
   {
     path: 'admin',
     component: AdminHome,
+    canActivate: [roleGuard],
+    data: { roles: ['ADMINISTRADOR'] } // Roles permitidos
+  },
+  {
+    path: 'restaurante',
+    component: MyRestaurant,
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR'] } // Roles permitidos
   },
