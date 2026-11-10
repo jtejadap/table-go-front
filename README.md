@@ -1,59 +1,31 @@
 # TableGoFront
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.3.
+TableGoFront es la aplicación web frontend del proyecto TableGo, desarrollada con Angular. Incluye pantallas de inicio de sesión y registro, gestión de la sesión con token y navegación protegida según el rol del usuario. Hay rutas para los perfiles de administrador, cliente y recepcionista; sus pantallas principales están preparadas para incorporar las funcionalidades de cada perfil.
 
-## Development server
+La autenticación se conecta con una API mediante la ruta `/api`. Durante el desarrollo, Angular reenvía esas solicitudes a `http://localhost:8080`, según la configuración de `proxy.conf.json`.
 
-To start a local development server, run:
+## Requisitos
 
-```bash
-ng serve
-```
+- Node.js y npm.
+- El backend del proyecto ejecutándose en `http://localhost:8080` para utilizar las funciones que requieren la API.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Instalación y ejecución
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Desde la raíz del proyecto, instala las dependencias y levanta el servidor de desarrollo:
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Abre [http://localhost:4200](http://localhost:4200) en el navegador. El servidor recarga la aplicación cuando se modifican los archivos fuente.
+
+## Comandos disponibles
 
 ```bash
-ng generate --help
+npm start     # Iniciar el servidor de desarrollo
+npm run build # Crear la compilación de producción
+npm test      # Ejecutar las pruebas unitarias
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+La compilación se genera en el directorio `dist/`.
