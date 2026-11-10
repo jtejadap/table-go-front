@@ -1,0 +1,118 @@
+<div class="min-h-screen grid place-content-center bg-[#f6f5f7] font-[Poppins,sans-serif]">
+  <h2 class="mb-6 text-center text-2xl font-semibold text-[#141E30]">Sistema de Restaurantes</h2>
+
+  <div
+    class="relative w-[850px] h-[500px] bg-white rounded-[13px] overflow-hidden shadow-[25px_30px_55px_#5557]"
+  >
+    <!-- ================= REGISTRO ================= -->
+    <div
+      class="absolute top-0 left-0 w-[60%] h-full px-10 transition-all duration-[600ms] ease-in-out"
+      [class]="isSignUp() ? 'translate-x-[66.7%] opacity-100 z-[5]' : 'opacity-0 z-[1] pointer-events-none'"
+    >
+      <form
+        [formGroup]="signupForm"
+        (ngSubmit)="onSignUp()"
+        class="h-full flex flex-col items-center justify-center px-[50px]"
+      >
+        <h1 class="text-3xl font-bold text-[#141E30]">Crear cuenta</h1>
+        <span class="text-xs mt-4 mb-2">o utiliza tu correo electrónico para registrarte</span>
+
+        <div class="my-2 w-full">
+          <input type="text" placeholder="Nombre" formControlName="nombre"
+            class="w-full px-[15px] py-3 bg-[#f3f3f3] outline-none border-b-2 border-transparent focus:border-[#243B55]" />
+        </div>
+        <div class="my-2 w-full">
+          <input type="email" placeholder="Email" formControlName="email"
+            class="w-full px-[15px] py-3 bg-[#f3f3f3] outline-none border-b-2 border-transparent focus:border-[#243B55]" />
+        </div>
+        <div class="my-2 w-full">
+          <input type="password" placeholder="Password" formControlName="password"
+            class="w-full px-[15px] py-3 bg-[#f3f3f3] outline-none border-b-2 border-transparent focus:border-[#243B55]" />
+        </div>
+
+        <p class="text-xs text-red-600 my-2 min-h-4">{{ signupMsg() }}</p>
+
+        <button type="submit"
+          class="mt-[17px] cursor-pointer rounded-[20px] border border-[#141E30] bg-[#243B55] px-[45px] py-3 text-xs font-bold uppercase tracking-[1px] text-white transition duration-100 ease-in hover:bg-white hover:text-[#141E30]">
+          Registrarse
+        </button>
+      </form>
+    </div>
+
+    <!-- ================= LOGIN ================= -->
+    <div
+      class="absolute top-0 left-0 w-[60%] h-full px-10 z-[2] transition-all duration-[600ms] ease-in-out"
+      [class]="isSignUp() ? 'translate-x-[20%] opacity-0 pointer-events-none' : ''"
+    >
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onLogin()"
+        class="h-full flex flex-col items-center justify-center px-[50px]"
+      >
+        <h1 class="text-3xl font-bold text-[#141E30]">Iniciar sesión</h1>
+        <span class="text-xs mt-4 mb-2">usa tu cuenta</span>
+
+        <div class="my-2 w-full">
+          <input type="email" placeholder="Email" formControlName="email" autocomplete="email"
+            class="w-full px-[15px] py-3 bg-[#f3f3f3] outline-none border-b-2 border-transparent focus:border-[#243B55]" />
+        </div>
+        <div class="my-2 w-full">
+          <input type="password" placeholder="Password" formControlName="password" autocomplete="current-password"
+            class="w-full px-[15px] py-3 bg-[#f3f3f3] outline-none border-b-2 border-transparent focus:border-[#243B55]" />
+        </div>
+
+        <a href="#" class="my-[15px] pb-[3px] text-sm text-[#333] no-underline border-b-2 border-[#EEE]">
+          ¿Olvidaste tu contraseña?
+        </a>
+
+        <p class="text-xs text-red-600 min-h-4">{{ errorMsg() }}</p>
+
+        <button type="submit" [disabled]="loading()"
+          class="mt-[17px] cursor-pointer rounded-[20px] border border-[#141E30] bg-[#243B55] px-[45px] py-3 text-xs font-bold uppercase tracking-[1px] text-white transition duration-100 ease-in hover:bg-white hover:text-[#141E30] disabled:cursor-not-allowed disabled:opacity-60">
+          {{ loading() ? 'Ingresando...' : 'Iniciar sesión' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- ================= OVERLAY ================= -->
+    <div
+      class="absolute top-0 left-[60%] w-[40%] h-full overflow-hidden z-[9] transition-transform duration-[600ms] ease-in-out"
+      [class]="isSignUp() ? '-translate-x-[150%]' : ''"
+    >
+      <div
+        class="relative -left-[150%] h-full w-[250%] bg-[linear-gradient(to_right,#141E30,#243B55)] text-white transition-transform duration-[600ms] ease-in-out"
+        [class]="isSignUp() ? 'translate-x-1/2' : ''"
+      >
+        <!-- Panel izquierdo -->
+        <div
+          class="absolute right-[60%] flex h-full w-[340px] flex-col items-center justify-center px-10 text-center transition-transform duration-[600ms] ease-in-out"
+          [class]="isSignUp() ? 'translate-x-1/4' : '-translate-x-[12%]'"
+        >
+          <h1 class="text-3xl font-bold">¡Bienvenido!</h1>
+          <p class="mt-[25px] mb-[35px] text-[11px] font-light leading-5 tracking-[0.5px]">
+            Para mantenerse conectado con nosotros, inicie sesión con su información personal.
+          </p>
+          <button type="button" (click)="isSignUp.set(false)"
+            class="cursor-pointer rounded-[20px] border border-white bg-transparent px-[45px] py-3 text-xs font-bold uppercase tracking-[1px] text-white">
+            Inicia sesión
+          </button>
+        </div>
+
+        <!-- Panel derecho -->
+        <div
+          class="absolute right-0 flex h-full w-[340px] flex-col items-center justify-center px-10 text-center transition-transform duration-[600ms] ease-in-out"
+          [class]="isSignUp() ? 'translate-x-[35%]' : 'translate-x-0'"
+        >
+          <h1 class="text-3xl font-bold">¡Hola, Amigo!</h1>
+          <p class="mt-[25px] mb-[35px] text-[11px] font-light leading-5 tracking-[0.5px]">
+            Introduce tus datos personales y comienza tu viaje con nosotros
+          </p>
+          <button type="button" (click)="isSignUp.set(true)"
+            class="cursor-pointer rounded-[20px] border border-white bg-transparent px-[45px] py-3 text-xs font-bold uppercase tracking-[1px] text-white">
+            Registrarse
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
