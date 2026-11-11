@@ -1,0 +1,158 @@
+  <section class="mx-auto max-w-5xl space-y-6 p-6 text-gray-800">
+      <header class="flex items-center justify-between">
+        <h1 class="text-xl font-semibold">Productos</h1>
+        <button type="button" class="rounded bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700"
+                (click)="nuevo()">
+          Nuevo producto
+        </button>
+      </header>
+ 
+      @if (error()) {
+        <div class="rounded border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700" role="alert">
+          {{ error() }}
+        </div>
+      }
+ 
+      <!-- Formulario crear / editar -->
+      @if (formOpen()) {
+        <form [formGroup]="form" (ngSubmit)="guardar()"
+              class="space-y-4 rounded border border-gray-200 bg-white p-4">
+          <h2 class="font-medium">{{ editingId() === null ? 'Nuevo producto' : 'Editar producto' }}</h2>
+ 
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block text-sm sm:col-span-2">
+              <span class="text-gray-600">Nombre</span>
+              <input type="text" formControlName="nombre" maxlength="150"
+                     class="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+              @if (invalid('nombre')) { <span class="text-xs text-red-600">El nombre es obligatorio (máx. 150 caracteres).</span> }
+            </label>
+ 
+            <label class="block text-sm sm:col-span-2">
+              <span class="text-gray-600">Descripción</span>
+              <textarea formControlName="descripcion" rows="3" maxlength="500"
+                        class="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"></textarea>
+            </label>
+ 
+            <label class="block text-sm">
+              <span class="text-gray-600">Precio</span>
+              <input type="number" formControlName="precio" step="0.01" min="0.01"
+                     class="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+              @if (invalid('precio')) { <span class="text-xs text-red-600">Debe ser mayor a 0, con máximo 2 decimales.</span> }
+            </label>
+ 
+            <label class="block text-sm">
+              <span class="text-gray-600">Categoría</span>
+              <select formControlName="categoria"
+                      class="mt-1 w-full rounded border border-gray-300 bg-white px-3 py-2 focus:border-gray-500 focus:outline-none">
+                <option value="" disabled>Selecciona una categoría</option>
+                @for (c of categorias; track c) {
+                  <option [value]="c">{{ etiqueta(c) }}</option>
+                }
+              </select>
+              @if (invalid('categoria')) { <span class="text-xs text-red-600">Selecciona una categoría.</span> }
+            </label>
+          </div>
+ 
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" formControlName="disponible" class="rounded border-gray-300" />
+            Disponible
+          </label>
+ 
+          <div class="flex gap-2">
+            <button type="submit" [disabled]="saving()"
+                    class="rounded bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:opacity-50">
+              {{ saving() ? 'Guardando…' : 'Guardar' }}
+            </button>
+            <button type="button" (click)="cancelar()"
+                    class="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      }
+ 
+      <!-- Filtros -->
+      <form [formGroup]="filtros" (ngSubmit)="buscar()" class="flex flex-wrap items-end gap-3 text-sm">
+        <label class="block">
+          <span class="text-gray-600">Nombre</span>
+          <input type="text" formControlName="nombre"
+                 class="mt-1 block w-52 rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-gray-600">Categoría</span>
+          <select formControlName="categoria"
+                  class="mt-1 block rounded border border-gray-300 bg-white px-3 py-2 focus:border-gray-500 focus:outline-none">
+            <option value="">Todas</option>
+            @for (c of categorias; track c) {
+              <option [value]="c">{{ etiqueta(c) }}</option>
+            }
+          </select>
+        </label>
+        <label class="block">
+          <span class="text-gray-600">Disponibilidad</span>
+          <select formControlName="disponible"
+                  class="mt-1 block rounded border border-gray-300 bg-white px-3 py-2 focus:border-gray-500 focus:outline-none">
+            <option value="">Todos</option>
+            <option value="true">Disponibles</option>
+            <option value="false">No disponibles</option>
+          </select>
+        </label>
+        <button type="submit" class="rounded border border-gray-300 px-4 py-2 hover:bg-gray-100">Filtrar</button>
+        <button type="button" (click)="limpiar()" class="px-2 py-2 text-gray-500 hover:text-gray-800">Limpiar</button>
+      </form>
+ 
+      <!-- Tabla -->
+      <div class="overflow-x-auto rounded border border-gray-200 bg-white">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-gray-200 bg-gray-50 text-gray-600">
+            <tr>
+              <th class="px-4 py-3 font-medium">Nombre</th>
+              <th class="px-4 py-3 font-medium">Categoría</th>
+              <th class="px-4 py-3 font-medium">Precio</th>
+              <th class="px-4 py-3 font-medium">Estado</th>
+              <th class="px-4 py-3 text-right font-medium">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @if (loading()) {
+              <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Cargando…</td></tr>
+            } @else {
+              @for (p of data()?.content; track p.id) {
+                <tr>
+                  <td class="px-4 py-3">
+                    <div class="font-medium">{{ p.nombre }}</div>
+                    @if (p.descripcion) {
+                      <div class="max-w-xs truncate text-xs text-gray-500">{{ p.descripcion }}</div>
+                    }
+                  </td>
+                  <td class="px-4 py-3">{{ etiqueta(p.categoria) }}</td>
+                  <td class="px-4 py-3">{{ p.precio | currency: 'COP' : 'symbol-narrow' : '1.0-2' }}</td>
+                  <td class="px-4 py-3">
+                    <span class="rounded px-2 py-0.5 text-xs"
+                          [class]="p.disponible ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'">
+                      {{ p.disponible ? 'Disponible' : 'No disponible' }}
+                    </span>
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-right">
+                    <button type="button" (click)="alternarDisponibilidad(p)" class="px-2 text-gray-700 hover:underline">
+                      {{ p.disponible ? 'Marcar no disponible' : 'Marcar disponible' }}
+                    </button>
+                    <button type="button" (click)="editar(p)" class="px-2 text-gray-700 hover:underline">Editar</button>
+                    <button type="button" (click)="eliminar(p)" class="px-2 text-red-600 hover:underline">Eliminar</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">No hay productos para mostrar.</td></tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+ 
+      @if (data(); as d) {
+        <app-pagination
+          [page]="d.page" [size]="d.size"
+          [totalElements]="d.totalElements" [totalPages]="d.totalPages"
+          (pageChange)="irAPagina($event)" (sizeChange)="cambiarTamano($event)" />
+      }
+    </section>

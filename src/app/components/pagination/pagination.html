@@ -1,0 +1,47 @@
+<nav class="flex flex-col gap-3 text-sm text-gray-600 sm:flex-row sm:items-center sm:justify-between"
+         aria-label="Paginación">
+      <div class="flex items-center gap-3">
+        <span>
+          @if (totalElements() === 0) { Sin resultados }
+          @else { {{ from() }}–{{ to() }} de {{ totalElements() }} }
+        </span>
+        <label class="flex items-center gap-2">
+          <span class="text-gray-500">Por página</span>
+          <select #sel
+                  class="rounded border border-gray-300 bg-white px-2 py-1 focus:border-gray-500 focus:outline-none"
+                  (change)="sizeChange.emit(+sel.value)">
+            @for (opt of sizeOptions(); track opt) {
+              <option [value]="opt" [selected]="opt === size()">{{ opt }}</option>
+            }
+          </select>
+        </label>
+      </div>
+ 
+      <div class="flex items-center gap-1">
+        <button type="button"
+                class="rounded border border-gray-300 px-3 py-1 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+                [disabled]="page() === 0"
+                (click)="pageChange.emit(page() - 1)">
+          Anterior
+        </button>
+ 
+        @for (p of pages(); track p) {
+          <button type="button"
+                  class="min-w-8 rounded border px-2 py-1"
+                  [class]="p === page()
+                    ? 'border-gray-800 bg-gray-800 text-white'
+                    : 'border-gray-300 hover:bg-gray-100'"
+                  [attr.aria-current]="p === page() ? 'page' : null"
+                  (click)="pageChange.emit(p)">
+            {{ p + 1 }}
+          </button>
+        }
+ 
+        <button type="button"
+                class="rounded border border-gray-300 px-3 py-1 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+                [disabled]="page() >= totalPages() - 1"
+                (click)="pageChange.emit(page() + 1)">
+          Siguiente
+        </button>
+      </div>
+</nav>

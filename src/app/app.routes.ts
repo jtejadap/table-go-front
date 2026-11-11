@@ -7,6 +7,8 @@ import { ReceptionistHome } from './recept-features/components/receptionist-home
 import { Unauthorized} from './components/unauthorized/unauthorized';
 import { Login } from './components/login/login';
 import { MyRestaurant } from './admin-features/components/my-restaurant/my-restaurant';
+import { ProductoAdmin } from './admin-features/components/producto-admin/producto-admin';
+import { MesaAdmin } from './admin-features/components/mesa-admin/mesa-admin';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -20,7 +22,19 @@ export const routes: Routes = [
     path: 'restaurante',
     component: MyRestaurant,
     canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] } // Roles permitidos
+    data: { roles: ['ADMINISTRADOR'] } 
+  },
+  {
+    path: 'productos',
+    component: ProductoAdmin,
+    canActivate: [roleGuard],
+    data: { roles: ['ADMINISTRADOR'] }
+  },
+  {
+    path: 'mesas',
+    component: MesaAdmin,
+    canActivate: [roleGuard],
+    data: { roles: ['ADMINISTRADOR'] } 
   },
   {
     path: 'inicio',

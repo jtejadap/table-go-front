@@ -1,0 +1,122 @@
+ <section class="mx-auto max-w-4xl space-y-6 p-6 text-gray-800">
+      <header class="flex items-center justify-between">
+        <h1 class="text-xl font-semibold">Mesas</h1>
+        <button type="button" class="rounded bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700"
+                (click)="nueva()">
+          Nueva mesa
+        </button>
+      </header>
+ 
+      @if (error()) {
+        <div class="rounded border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700" role="alert">
+          {{ error() }}
+        </div>
+      }
+ 
+      <!-- Formulario crear / editar -->
+      @if (formOpen()) {
+        <form [formGroup]="form" (ngSubmit)="guardar()"
+              class="space-y-4 rounded border border-gray-200 bg-white p-4">
+          <h2 class="font-medium">{{ editingId() === null ? 'Nueva mesa' : 'Editar mesa' }}</h2>
+ 
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block text-sm">
+              <span class="text-gray-600">Número</span>
+              <input type="number" formControlName="numero" min="1"
+                     class="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+              @if (invalid('numero')) { <span class="text-xs text-red-600">Debe ser un número mayor o igual a 1.</span> }
+            </label>
+ 
+            <label class="block text-sm">
+              <span class="text-gray-600">Capacidad (1–50)</span>
+              <input type="number" formControlName="capacidad" min="1" max="50"
+                     class="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+              @if (invalid('capacidad')) { <span class="text-xs text-red-600">Debe estar entre 1 y 50.</span> }
+            </label>
+          </div>
+ 
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" formControlName="activa" class="rounded border-gray-300" />
+            Mesa activa
+          </label>
+ 
+          <div class="flex gap-2">
+            <button type="submit" [disabled]="saving()"
+                    class="rounded bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:opacity-50">
+              {{ saving() ? 'Guardando…' : 'Guardar' }}
+            </button>
+            <button type="button" (click)="cancelar()"
+                    class="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      }
+ 
+      <!-- Filtros -->
+      <form [formGroup]="filtros" (ngSubmit)="buscar()" class="flex flex-wrap items-end gap-3 text-sm">
+        <label class="block">
+          <span class="text-gray-600">Capacidad mínima</span>
+          <input type="number" formControlName="capacidadMin" min="1"
+                 class="mt-1 block w-36 rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-gray-600">Estado</span>
+          <select formControlName="activa"
+                  class="mt-1 block rounded border border-gray-300 bg-white px-3 py-2 focus:border-gray-500 focus:outline-none">
+            <option value="">Todas</option>
+            <option value="true">Activas</option>
+            <option value="false">Inactivas</option>
+          </select>
+        </label>
+        <button type="submit" class="rounded border border-gray-300 px-4 py-2 hover:bg-gray-100">Filtrar</button>
+        <button type="button" (click)="limpiar()" class="px-2 py-2 text-gray-500 hover:text-gray-800">Limpiar</button>
+      </form>
+ 
+      <!-- Tabla -->
+      <div class="overflow-x-auto rounded border border-gray-200 bg-white">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-gray-200 bg-gray-50 text-gray-600">
+            <tr>
+              <th class="px-4 py-3 font-medium">Número</th>
+              <th class="px-4 py-3 font-medium">Capacidad</th>
+              <th class="px-4 py-3 font-medium">Estado</th>
+              <th class="px-4 py-3 text-right font-medium">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @if (loading()) {
+              <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">Cargando…</td></tr>
+            } @else {
+              @for (m of data()?.content; track m.id) {
+                <tr>
+                  <td class="px-4 py-3">{{ m.numero }}</td>
+                  <td class="px-4 py-3">{{ m.capacidad }} personas</td>
+                  <td class="px-4 py-3">
+                    <span class="rounded px-2 py-0.5 text-xs"
+                          [class]="m.activa ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'">
+                      {{ m.activa ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <button type="button" (click)="editar(m)" class="px-2 text-gray-700 hover:underline">Editar</button>
+                    @if (m.activa) {
+                      <button type="button" (click)="desactivar(m)" class="px-2 text-red-600 hover:underline">Desactivar</button>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">No hay mesas para mostrar.</td></tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+ 
+      @if (data(); as d) {
+        <app-pagination
+          [page]="d.page" [size]="d.size"
+          [totalElements]="d.totalElements" [totalPages]="d.totalPages"
+          (pageChange)="irAPagina($event)" (sizeChange)="cambiarTamano($event)" />
+      }
+    </section>
