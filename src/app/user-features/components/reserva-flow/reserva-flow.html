@@ -1,0 +1,182 @@
+ @if (datos.isLoading()) {
+      <p class="p-8 text-stone-600">Cargando restaurante…</p>
+    } @else if (datos.error()) {
+      <div class="p-8">
+        <p class="text-stone-700">No pudimos cargar este restaurante.</p>
+        <a routerLink="/restaurantes" class="mt-2 inline-block text-teal-800 underline">Volver a la búsqueda</a>
+      </div>
+    } @else if (datos.value(); as d) {
+      <div class="mx-auto max-w-6xl px-4 pb-28 pt-4 lg:pb-8">
+        <a routerLink="/restaurantes" class="text-sm text-teal-800 hover:underline">Volver al mapa</a>
+ 
+        <header class="mt-2 border-b border-stone-200 pb-4">
+          <h1 class="text-2xl font-semibold tracking-tight text-stone-900">{{ d.rest.nombre }}</h1>
+          <p class="text-sm text-stone-600">
+            {{ d.rest.direccion }}@if (d.rest.ciudad) {, {{ d.rest.ciudad }}}
+            · Abierto de {{ d.rest.horaApertura.slice(0, 5) }} a {{ d.rest.horaCierre.slice(0, 5) }}
+          </p>
+          @if (d.rest.descripcion) { <p class="mt-2 max-w-prose text-stone-700">{{ d.rest.descripcion }}</p> }
+        </header>
+ 
+        <div class="mt-6 grid gap-8 lg:grid-cols-[1fr_24rem]">
+          <!-- ───── Menú ───── -->
+          <section aria-labelledby="menu-t">
+            <h2 id="menu-t" class="text-lg font-semibold text-stone-900">Menú</h2>
+            <p class="mb-4 text-sm text-stone-600">Puedes reservar sin pedir. Si eliges ahora, tu plato estará listo más rápido.</p>
+ 
+            @for (g of grupos(); track g.nombre) {
+              <h3 class="mb-1 mt-6 text-base font-semibold text-stone-800">{{ g.nombre }}</h3>
+              <ul class="divide-y divide-stone-100 rounded-xl border border-stone-200 bg-white">
+                @for (p of g.productos; track p.id) {
+                  <li class="flex items-center gap-4 p-4" [class.opacity-50]="!p.disponible">
+                    <div class="min-w-0 flex-1">
+                      <p class="font-medium text-stone-900">{{ p.nombre }}</p>
+                      @if (p.descripcion) { <p class="line-clamp-2 text-sm text-stone-600">{{ p.descripcion }}</p> }
+                      <p class="mt-1 text-sm font-medium tabular-nums text-stone-800">{{ p.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+                    </div>
+ 
+                    @if (!p.disponible) {
+                      <span class="text-sm text-stone-500">No disponible</span>
+                    } @else if (!editable()) {
+                      @if (cantidad(p.id) > 0) { <span class="text-sm font-medium">×{{ cantidad(p.id) }}</span> }
+                    } @else if (cantidad(p.id) === 0) {
+                      <button type="button" (click)="cambiar(p.id, 1)"
+                        class="rounded-lg border border-teal-800 px-3 py-1.5 text-sm font-medium text-teal-800 hover:bg-teal-50">
+                        Agregar
+                      </button>
+                    } @else {
+                      <div class="flex items-center gap-2" role="group" [attr.aria-label]="'Cantidad de ' + p.nombre">
+                        <button type="button" (click)="cambiar(p.id, -1)" aria-label="Quitar uno"
+                          class="size-8 rounded-full border border-stone-300 text-lg leading-none hover:bg-stone-50">−</button>
+                        <span class="w-6 text-center tabular-nums">{{ cantidad(p.id) }}</span>
+                        <button type="button" (click)="cambiar(p.id, 1)" aria-label="Agregar uno"
+                          class="size-8 rounded-full border border-stone-300 text-lg leading-none hover:bg-stone-50">+</button>
+                      </div>
+                    }
+                  </li>
+                }
+              </ul>
+            } @empty {
+              <p class="rounded-lg bg-stone-50 p-4 text-sm text-stone-600">Este restaurante aún no publicó su menú.</p>
+            }
+          </section>
+ 
+          <!-- ───── Reserva + pedido ───── -->
+          <aside #panel class="lg:sticky lg:top-4 lg:self-start" aria-labelledby="reserva-t">
+            <div class="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
+              @if (reservaActual(); as r) {
+                <div class="flex items-start justify-between gap-2">
+                  <h2 id="reserva-t" class="text-lg font-semibold text-stone-900">Tu reserva #{{ r.id }}</h2>
+                  <span class="rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-900">{{ r.estado.replace('_', ' ') }}</span>
+                </div>
+                <p class="mt-2 text-sm text-stone-700">
+                  {{ r.fechaHora | date: "EEEE d 'de' MMMM, h:mm a" }} · {{ r.numPersonas }}
+                  {{ r.numPersonas === 1 ? 'persona' : 'personas' }}
+                </p>
+                <p class="text-sm text-stone-600">
+                  {{ r.mesaNumero ? 'Mesa ' + r.mesaNumero : 'La mesa se asigna al confirmar el restaurante.' }}
+                </p>
+              } @else {
+                <h2 id="reserva-t" class="text-lg font-semibold text-stone-900">Reserva tu mesa</h2>
+                <div class="mt-3 grid grid-cols-2 gap-3">
+                  <label class="col-span-2 text-sm text-stone-700">Fecha
+                    <input type="date" [min]="hoy" [(ngModel)]="fecha"
+                      class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm" />
+                  </label>
+                  <label class="text-sm text-stone-700">Hora
+                    <select [(ngModel)]="hora" [disabled]="!fecha()"
+                      class="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm disabled:bg-stone-50">
+                      <option value="" disabled>{{ fecha() ? 'Elige' : 'Primero la fecha' }}</option>
+                      @for (h of horas(); track h) { <option [value]="h">{{ h }}</option> }
+                    </select>
+                  </label>
+                  <label class="text-sm text-stone-700">Personas
+                    <input type="number" min="1" max="50" [(ngModel)]="personas"
+                      class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm" />
+                  </label>
+                  <label class="col-span-2 text-sm text-stone-700">Notas (opcional)
+                    <textarea rows="2" maxlength="500" [(ngModel)]="notas" placeholder="Alergias, ocasión especial…"
+                      class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></textarea>
+                  </label>
+                </div>
+              }
+ 
+              <!-- Pedido -->
+              <h3 class="mb-2 mt-5 text-sm font-semibold text-stone-800">Tu pedido</h3>
+              @if (lineas().length === 0) {
+                <p class="text-sm text-stone-600">Aún no has agregado platos.</p>
+              } @else {
+                <ul class="space-y-3">
+                  @for (l of lineas(); track l.producto.id) {
+                    <li class="text-sm">
+                      <div class="flex justify-between gap-2">
+                        <span>{{ l.cantidad }} × {{ l.producto.nombre }}</span>
+                        <span class="tabular-nums">{{ l.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+                      </div>
+                      @if (editable()) {
+                        <input type="text" maxlength="200" [ngModel]="l.nota" (ngModelChange)="setNota(l.producto.id, $event)"
+                          placeholder="Nota (ej. sin cebolla)" [attr.aria-label]="'Nota para ' + l.producto.nombre"
+                          class="mt-1 w-full rounded-md border border-stone-200 px-2 py-1 text-xs" />
+                      } @else if (l.nota) {
+                        <p class="text-xs text-stone-500">{{ l.nota }}</p>
+                      }
+                    </li>
+                  }
+                </ul>
+                <p class="mt-3 flex justify-between border-t border-stone-100 pt-3 font-semibold">
+                  <span>Total</span>
+                  <span class="tabular-nums">{{ total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+                </p>
+              }
+ 
+              @if (mensaje(); as m) {
+                <p class="mt-4 rounded-md px-3 py-2 text-sm" role="status"
+                  [class]="m.ok ? 'bg-teal-50 text-teal-900' : 'bg-red-50 text-red-800'">{{ m.texto }}</p>
+              }
+ 
+              <!-- Acciones -->
+              @if (!reservaActual()) {
+                <button type="button" (click)="reservar(d.rest.id)" [disabled]="!formValido() || enviando()"
+                  class="mt-5 w-full rounded-lg bg-teal-800 px-4 py-3 font-medium text-white hover:bg-teal-900 disabled:cursor-not-allowed disabled:bg-stone-300">
+                  {{ enviando() ? 'Reservando…' : 'Reservar mesa' }}
+                </button>
+                @if (!formValido()) {
+                  <p class="mt-2 text-center text-xs text-stone-500">Elige fecha, hora y número de personas.</p>
+                }
+              } @else if (editable()) {
+                <button type="button" (click)="guardarPedido()" [disabled]="!hayCambios() || enviando()"
+                  class="mt-5 w-full rounded-lg bg-teal-800 px-4 py-3 font-medium text-white hover:bg-teal-900 disabled:cursor-not-allowed disabled:bg-stone-300">
+                  {{ enviando() ? 'Guardando…' : 'Guardar pedido' }}
+                </button>
+                @if (!confirmandoCancelar()) {
+                  <button type="button" (click)="confirmandoCancelar.set(true)"
+                    class="mt-2 w-full rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50">Cancelar reserva</button>
+                } @else {
+                  <div class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-900">
+                    <p>¿Seguro que quieres cancelar esta reserva?</p>
+                    <div class="mt-2 flex gap-2">
+                      <button type="button" (click)="cancelar()" class="rounded-md bg-red-700 px-3 py-1.5 text-white">Sí, cancelar</button>
+                      <button type="button" (click)="confirmandoCancelar.set(false)" class="rounded-md px-3 py-1.5">No, mantener</button>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <a routerLink="/restaurantes" class="mt-5 block rounded-lg border border-stone-300 px-4 py-3 text-center text-sm font-medium hover:bg-stone-50">
+                  Buscar otro restaurante
+                </a>
+              }
+            </div>
+          </aside>
+        </div>
+      </div>
+ 
+      <!-- Barra inferior (móvil) -->
+      <div class="fixed inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-stone-200 bg-white p-3 lg:hidden">
+        <p class="text-sm"><span class="font-semibold tabular-nums">{{ total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+          <span class="text-stone-500"> · {{ unidades() }} {{ unidades() === 1 ? 'plato' : 'platos' }}</span></p>
+        <button type="button" (click)="panel.scrollIntoView({ behavior: 'smooth' })"
+          class="rounded-lg bg-teal-800 px-4 py-2 text-sm font-medium text-white">
+          {{ reservaActual() ? 'Ver mi reserva' : 'Reservar' }}
+        </button>
+      </div>
+    }

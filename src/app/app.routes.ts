@@ -9,6 +9,8 @@ import { Login } from './components/login/login';
 import { MyRestaurant } from './admin-features/components/my-restaurant/my-restaurant';
 import { ProductoAdmin } from './admin-features/components/producto-admin/producto-admin';
 import { MesaAdmin } from './admin-features/components/mesa-admin/mesa-admin';
+import { ReservaFlow } from './user-features/components/reserva-flow/reserva-flow';
+import { RestaurantesExplorer } from './user-features/components/restaurantes-explorer/restaurantes-explorer';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -42,6 +44,18 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: ['CLIENTE'] }
   },
+  {
+    path: 'restaurantes/:id',
+    component: ReservaFlow, 
+    canActivate: [roleGuard],
+    data: { roles: ['CLIENTE'] }
+  },
+  {
+    path: 'restaurantes',
+    component: RestaurantesExplorer, 
+    canActivate: [roleGuard],
+    data: { roles: ['CLIENTE'] }
+  },  
   {
     path: 'recepcion',
     component: ReceptionistHome, 
