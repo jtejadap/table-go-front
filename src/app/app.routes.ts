@@ -12,6 +12,7 @@ import { MesaAdmin } from './admin-features/components/mesa-admin/mesa-admin';
 import { ReservaFlow } from './user-features/components/reserva-flow/reserva-flow';
 import { RestaurantesExplorer } from './user-features/components/restaurantes-explorer/restaurantes-explorer';
 import { ReservasGestion } from './recept-features/components/reservas-gestion/reservas-gestion';
+import { UsersAdmin } from './admin-features/components/users-admin/users-admin';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -36,6 +37,12 @@ export const routes: Routes = [
   {
     path: 'mesas',
     component: MesaAdmin,
+    canActivate: [roleGuard],
+    data: { roles: ['ADMINISTRADOR'] } 
+  },
+   {
+    path: 'staff',
+    component: UsersAdmin,
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR'] } 
   },
