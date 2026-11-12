@@ -1,0 +1,242 @@
+ <div class="mx-auto max-w-7xl p-4 text-stone-800 sm:p-6">
+      <header class="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 class="text-xl font-semibold text-stone-900">Reservas</h1>
+          <p class="text-sm text-stone-500">
+            Las nuevas solicitudes y las más próximas aparecen primero.
+          </p>
+        </div>
+        @if (pendientes() > 0) {
+          <span class="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-sm text-amber-900">
+            {{ pendientes() }} por confirmar
+          </span>
+        }
+      </header>
+ 
+      <!-- Filtros -->
+      <form [formGroup]="form" class="mb-4 grid gap-3 rounded-lg border border-stone-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]">
+        <label class="block text-sm">
+          <span class="mb-1 block text-stone-600">Cliente</span>
+          <input
+            type="search"
+            formControlName="nombreCliente"
+            placeholder="Buscar por nombre"
+            class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-200"
+          />
+        </label>
+        <label class="block text-sm">
+          <span class="mb-1 block text-stone-600">Estado</span>
+          <select
+            formControlName="estado"
+            class="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-200"
+          >
+            <option value="">Todos</option>
+            @for (e of estados; track e) {
+              <option [value]="e">{{ etiqueta[e] }}</option>
+            }
+          </select>
+        </label>
+        <label class="block text-sm">
+          <span class="mb-1 block text-stone-600">Desde</span>
+          <input type="date" formControlName="desde" class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-200" />
+        </label>
+        <label class="block text-sm">
+          <span class="mb-1 block text-stone-600">Hasta</span>
+          <input type="date" formControlName="hasta" class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-200" />
+        </label>
+        <div class="flex items-end gap-1 sm:col-span-2 lg:col-span-1">
+          <button type="button" (click)="rango('hoy')" class="rounded-md border border-stone-300 px-2.5 py-2 text-sm hover:bg-stone-50">Hoy</button>
+          <button type="button" (click)="rango('semana')" class="rounded-md border border-stone-300 px-2.5 py-2 text-sm hover:bg-stone-50">7 días</button>
+          <button type="button" (click)="rango('todas')" class="rounded-md border border-stone-300 px-2.5 py-2 text-sm hover:bg-stone-50">Todas</button>
+        </div>
+      </form>
+ 
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <!-- Lista -->
+        <section [class]="seleccionada() ? 'hidden lg:block' : 'block'" aria-label="Lista de reservas">
+          @if (error()) {
+            <p class="mb-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800" role="alert">
+              {{ error() }}
+              <button type="button" class="ml-2 underline" (click)="recargar$.next()">Reintentar</button>
+            </p>
+          }
+ 
+          <ul class="divide-y divide-stone-200 overflow-hidden rounded-lg border border-stone-200 bg-white" [class.opacity-60]="cargando()">
+            @for (r of ordenadas(); track r.id) {
+              <li>
+                <button
+                  type="button"
+                  (click)="seleccionar(r)"
+                  [attr.aria-pressed]="r.id === seleccionadaId()"
+                  class="block w-full border-l-4 px-4 py-3 text-left hover:bg-stone-50 focus-visible:bg-stone-50 focus-visible:outline-none"
+                  [class]="itemClase(r)"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <p class="truncate font-medium text-stone-900">{{ r.cliente }}</p>
+                      <p class="text-sm text-stone-600">
+                        {{ cuando(r.fechaHora) }}
+                        @if (relativo(r.fechaHora); as rel) {
+                          <span class="text-stone-400">({{ rel }})</span>
+                        }
+                      </p>
+                    </div>
+                    <div class="flex shrink-0 flex-col items-end gap-1">
+                      <span class="rounded-full border px-2 py-0.5 text-xs" [class]="estilo[r.estado]">{{ etiqueta[r.estado] }}</span>
+                      @if (r.estado === 'PENDIENTE') {
+                        <span class="text-xs font-medium text-amber-800">Nueva</span>
+                      }
+                    </div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">
+                    {{ r.numPersonas }} {{ r.numPersonas === 1 ? 'persona' : 'personas' }}
+                    @if (r.mesaNumero) { · Mesa {{ r.mesaNumero }} } @else { · Sin mesa }
+                  </p>
+                </button>
+              </li>
+            } @empty {
+              <li class="px-4 py-10 text-center text-sm text-stone-500">
+                @if (cargando()) { Cargando reservas… } @else { No hay reservas con estos filtros. Prueba ampliando el rango de fechas. }
+              </li>
+            }
+          </ul>
+ 
+          @if (totalPaginas() > 1) {
+            <nav class="mt-3 flex items-center justify-between text-sm text-stone-600" aria-label="Paginación">
+              <button type="button" [disabled]="pagina() === 0" (click)="irA(pagina() - 1)" class="rounded-md border border-stone-300 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40">Anterior</button>
+              <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }} · {{ total() }} reservas</span>
+              <button type="button" [disabled]="pagina() + 1 >= totalPaginas()" (click)="irA(pagina() + 1)" class="rounded-md border border-stone-300 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40">Siguiente</button>
+            </nav>
+          }
+        </section>
+ 
+        <!-- Detalle -->
+        <section [class]="seleccionada() ? 'block' : 'hidden lg:block'" aria-label="Detalle de la reserva">
+          @if (seleccionada(); as r) {
+            <article class="rounded-lg border border-stone-200 bg-white p-4 sm:p-5">
+              <button type="button" (click)="seleccionadaId.set(null)" class="mb-3 text-sm text-stone-500 underline lg:hidden">Volver a la lista</button>
+ 
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h2 class="text-lg font-semibold text-stone-900">{{ r.cliente }}</h2>
+                  <p class="text-sm text-stone-500">Reserva #{{ r.id }} · {{ r.restaurante }}</p>
+                </div>
+                <span class="rounded-full border px-2.5 py-0.5 text-sm" [class]="estilo[r.estado]">{{ etiqueta[r.estado] }}</span>
+              </div>
+ 
+              <div class="my-6">
+                <app-reservas-stepper [estado]="r.estado" />
+              </div>
+ 
+              <!-- Qué hacer ahora -->
+              @if (proximo(); as sig) {
+                <div class="rounded-md border border-stone-200 bg-stone-50 p-4">
+                  <p class="text-sm font-medium text-stone-900">Siguiente paso: {{ etiqueta[sig] }}</p>
+ 
+                  @if (sig === 'CONFIRMADA') {
+                    <p class="mt-1 text-sm text-stone-600">
+                      Elige una mesa para {{ r.numPersonas }} {{ r.numPersonas === 1 ? 'persona' : 'personas' }}. Si la mesa ya está
+                      reservada en ese horario, el sistema te lo indicará.
+                    </p>
+                    <label class="mt-3 block text-sm">
+                      <span class="mb-1 block text-stone-600">Mesa</span>
+                      <select
+                        [value]="mesaId() ?? ''"
+                        (change)="mesaId.set(+$any($event.target).value || null)"
+                        class="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-200 sm:w-72"
+                      >
+                        <option value="">{{ cargandoMesas() ? 'Cargando mesas…' : 'Selecciona una mesa' }}</option>
+                        @for (m of mesas(); track m.id) {
+                          <option [value]="m.id" [selected]="m.id === mesaId()">Mesa {{ m.numero }} · capacidad {{ m.capacidad }}</option>
+                        }
+                      </select>
+                    </label>
+                    @if (!cargandoMesas() && mesas().length === 0) {
+                      <p class="mt-2 text-sm text-amber-800">No hay mesas activas con capacidad suficiente.</p>
+                    }
+                  } @else if (sig === 'EN_CURSO') {
+                    <p class="mt-1 text-sm text-stone-600">Úsalo cuando el cliente llegue y se siente en su mesa.</p>
+                  } @else if (sig === 'COMPLETADA') {
+                    <p class="mt-1 text-sm text-stone-600">Úsalo cuando el servicio haya terminado.</p>
+                  }
+ 
+                  <div class="mt-4 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      (click)="cambiar(sig)"
+                      [disabled]="guardando() || (sig === 'CONFIRMADA' && !mesaId())"
+                      class="rounded-md bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {{ guardando() ? 'Guardando…' : accion[sig] }}
+                    </button>
+ 
+                    @if (puede(r, 'NO_SHOW') && confirmando() === null) {
+                      <button type="button" (click)="confirmando.set('NO_SHOW')" class="rounded-md border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-100">Marcar no asistió</button>
+                    }
+                    @if (puede(r, 'CANCELADA') && confirmando() === null) {
+                      <button type="button" (click)="confirmando.set('CANCELADA')" class="rounded-md border border-rose-200 px-3 py-2 text-sm text-rose-800 hover:bg-rose-50">Cancelar reserva</button>
+                    }
+                  </div>
+ 
+                  @if (confirmando(); as c) {
+                    <div class="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-stone-300 bg-white p-3 text-sm" role="alertdialog">
+                      <span class="mr-auto text-stone-700">
+                        {{ c === 'CANCELADA' ? '¿Cancelar esta reserva?' : '¿Marcar que el cliente no asistió?' }} No se puede deshacer.
+                      </span>
+                      <button type="button" (click)="confirmando.set(null)" class="rounded-md border border-stone-300 px-3 py-1.5 hover:bg-stone-50">Volver</button>
+                      <button type="button" (click)="cambiar(c)" [disabled]="guardando()" class="rounded-md bg-rose-800 px-3 py-1.5 text-white hover:bg-rose-700 disabled:opacity-40">
+                        {{ c === 'CANCELADA' ? 'Sí, cancelar' : 'Sí, marcar' }}
+                      </button>
+                    </div>
+                  }
+ 
+                  @if (errorAccion()) {
+                    <p class="mt-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800" role="alert">{{ errorAccion() }}</p>
+                  }
+                </div>
+              }
+ 
+              <!-- Datos -->
+              <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+                <div><dt class="text-stone-500">Fecha y hora</dt><dd class="font-medium">{{ cuando(r.fechaHora) }}</dd></div>
+                <div><dt class="text-stone-500">Personas</dt><dd class="font-medium">{{ r.numPersonas }}</dd></div>
+                <div><dt class="text-stone-500">Mesa</dt><dd class="font-medium">{{ r.mesaNumero ? 'Mesa ' + r.mesaNumero : 'Sin asignar' }}</dd></div>
+              </dl>
+ 
+              @if (r.notas) {
+                <div class="mt-4 rounded-md bg-stone-50 px-3 py-2 text-sm">
+                  <p class="text-stone-500">Notas del cliente</p>
+                  <p class="text-stone-800">{{ r.notas }}</p>
+                </div>
+              }
+ 
+              <div class="mt-5">
+                <h3 class="mb-2 text-sm font-medium text-stone-900">Pedido anticipado</h3>
+                @if (r.items.length) {
+                  <ul class="divide-y divide-stone-100 text-sm">
+                    @for (i of r.items; track i.productoId) {
+                      <li class="flex justify-between gap-3 py-2">
+                        <div class="min-w-0">
+                          <p>{{ i.cantidad }} × {{ i.producto }}</p>
+                          @if (i.nota) { <p class="text-xs text-stone-500">{{ i.nota }}</p> }
+                        </div>
+                        <span class="shrink-0 tabular-nums">{{ dinero(i.subtotal) }}</span>
+                      </li>
+                    }
+                  </ul>
+                  <p class="mt-2 flex justify-between border-t border-stone-200 pt-2 text-sm font-semibold">
+                    <span>Total</span><span class="tabular-nums">{{ dinero(r.total) }}</span>
+                  </p>
+                } @else {
+                  <p class="text-sm text-stone-500">El cliente no pidió productos por adelantado.</p>
+                }
+              </div>
+            </article>
+          } @else {
+            <div class="hidden rounded-lg border border-dashed border-stone-300 p-10 text-center text-sm text-stone-500 lg:block">
+              Selecciona una reserva para ver su progreso y el siguiente paso.
+            </div>
+          }
+        </section>
+      </div>
+    </div>
