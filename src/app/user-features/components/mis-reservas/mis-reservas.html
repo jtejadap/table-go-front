@@ -1,0 +1,190 @@
+<section class="mx-auto max-w-4xl">
+  <header class="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <h1 class="text-3xl font-bold tracking-tight">Mis reservas</h1>
+    @if (pagina(); as p) {
+      <p class="text-slate-600">{{ p.totalElements }} {{ p.totalElements === 1 ? 'reserva' : 'reservas' }}</p>
+    }
+  </header>
+
+  <form
+    class="mb-4 flex flex-wrap items-end gap-x-4 gap-y-3 rounded-lg border border-slate-300 bg-white p-4"
+    (submit)="$event.preventDefault()"
+    aria-label="Filtrar reservas"
+  >
+    <label class="flex flex-1 basis-32 flex-col gap-1 text-sm text-slate-600 sm:flex-none">
+      <span>Estado</span>
+      <select
+        class="w-full rounded-md border border-slate-300 bg-white px-2.5 py-2 text-base text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:w-44"
+        [value]="estado()"
+        (change)="cambiarEstado($any($event.target).value)"
+      >
+        <option value="">Todos</option>
+        @for (e of estados; track e.valor) {
+          <option [value]="e.valor" [selected]="estado() === e.valor">{{ e.etiqueta }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="flex flex-1 basis-32 flex-col gap-1 text-sm text-slate-600 sm:flex-none">
+      <span>Desde</span>
+      <input
+        type="date"
+        class="w-full rounded-md border border-slate-300 bg-white px-2.5 py-2 text-base text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:w-44"
+        [value]="desde()"
+        [max]="hasta()"
+        (change)="cambiarDesde($any($event.target).value)"
+      />
+    </label>
+
+    <label class="flex flex-1 basis-32 flex-col gap-1 text-sm text-slate-600 sm:flex-none">
+      <span>Hasta</span>
+      <input
+        type="date"
+        class="w-full rounded-md border border-slate-300 bg-white px-2.5 py-2 text-base text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:w-44"
+        [value]="hasta()"
+        [min]="desde()"
+        (change)="cambiarHasta($any($event.target).value)"
+      />
+    </label>
+
+    <button
+      type="button"
+      class="rounded-md px-2.5 py-2 text-teal-700 underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-default disabled:text-slate-500 disabled:no-underline disabled:opacity-50"
+      [disabled]="!hayFiltros()"
+      (click)="limpiarFiltros()"
+    >
+      Limpiar filtros
+    </button>
+  </form>
+
+  @if (rangoInvalido()) {
+    <p class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-red-800" role="alert">
+      La fecha inicial no puede ser posterior a la final. Corrige el rango para ver resultados.
+    </p>
+  }
+
+  @if (reservas.error()) {
+    <div class="mb-4 flex items-center justify-between gap-4 rounded-lg bg-red-50 px-4 py-3 text-red-800" role="alert">
+      <p>No pudimos cargar tus reservas. Revisa tu conexión e inténtalo de nuevo.</p>
+      <button
+        type="button"
+        class="rounded-md px-2.5 py-1.5 underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800"
+        (click)="reservas.reload()"
+      >
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <div
+    class="transition-opacity motion-reduce:transition-none"
+    [class.opacity-55]="reservas.isLoading()"
+    [attr.aria-busy]="reservas.isLoading()"
+  >
+    @if (!pagina() && reservas.isLoading()) {
+      <p class="py-10 text-center text-slate-600">Cargando tus reservas…</p>
+    } @else if (pagina()) {
+      <ul class="mb-5 divide-y divide-slate-200 rounded-lg border border-slate-300 bg-white">
+        @for (r of filas(); track r.id) {
+          <li class="grid grid-cols-[3.5rem_1fr] items-start gap-4 p-4 sm:grid-cols-[4.25rem_1fr_auto]">
+            <div
+              class="flex flex-col items-center rounded-md border-2 border-slate-900 py-2 leading-none"
+              [class.opacity-60]="r.estado === 'CANCELADA'"
+              aria-hidden="true"
+            >
+              <span class="text-3xl font-extrabold">{{ r.dia }}</span>
+              <span class="mt-1 text-sm font-semibold lowercase text-slate-600">{{ r.mes }}</span>
+            </div>
+
+            <div [class.opacity-60]="r.estado === 'CANCELADA'">
+              <h2 class="mb-0.5 text-lg font-semibold">{{ r.restaurante }}</h2>
+              <p class="text-sm text-slate-600">
+                <span class="inline-block first-letter:uppercase">{{ r.diaSemana }}</span>, {{ r.hora }} ·
+                {{ r.numPersonas }} {{ r.numPersonas === 1 ? 'persona' : 'personas' }}
+                @if (r.mesaNumero) { · Mesa {{ r.mesaNumero }} }
+              </p>
+
+              @if (r.notas) {
+                <p class="mt-1.5 text-sm italic text-slate-600">{{ r.notas }}</p>
+              }
+
+              @if (r.items.length) {
+                <details class="mt-2.5 text-sm">
+                  <summary
+                    class="w-fit cursor-pointer font-semibold text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                  >
+                    Pedido ({{ r.items.length }} {{ r.items.length === 1 ? 'plato' : 'platos' }})
+                  </summary>
+                  <ul class="mt-2 max-w-md">
+                    @for (i of r.precios; track i.productoId) {
+                      <li class="flex justify-between gap-4 border-b border-dashed border-slate-300 py-1">
+                        <span>
+                          {{ i.cantidad }} × {{ i.producto }}
+                          @if (i.nota) { <em class="text-slate-500">({{ i.nota }})</em> }
+                        </span>
+                        <span>{{ i.subtotalFmt }}</span>
+                      </li>
+                    }
+                  </ul>
+                </details>
+              }
+            </div>
+
+            <div class="col-span-full flex flex-wrap items-center justify-between gap-2 sm:col-span-1 sm:flex-col sm:items-end sm:justify-start">
+              <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" [class]="r.claseEstado">
+                {{ r.etiquetaEstado }}
+              </span>
+              @if (r.items.length) {
+                <strong class="text-base">{{ r.totalFmt }}</strong>
+              }
+              @if (r.editable) {
+                <a
+                  class="inline-block rounded-md bg-teal-700 px-4 py-2 font-semibold text-white hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                  [routerLink]="['/restaurantes', r.restauranteId]"
+                  [queryParams]="{ reserva: r.id }"
+                  [attr.aria-label]="'Modificar reserva en ' + r.restaurante"
+                >
+                  Modificar
+                </a>
+              }
+            </div>
+          </li>
+        } @empty {
+          <li class="flex flex-col items-center gap-2 px-4 py-10 text-center text-slate-600">
+            @if (hayFiltros()) {
+              <p>Ninguna reserva coincide con estos filtros.</p>
+              <button
+                type="button"
+                class="rounded-md px-2.5 py-1.5 text-teal-700 underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                (click)="limpiarFiltros()"
+              >
+                Ver todas mis reservas
+              </button>
+            } @else {
+              <p>Aún no tienes reservas.</p>
+              <a
+                class="inline-block rounded-md bg-teal-700 px-4 py-2 font-semibold text-white hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                routerLink="/restaurantes"
+              >
+                Explorar restaurantes
+              </a>
+            }
+          </li>
+        }
+      </ul>
+
+      @if (pagina(); as p) {
+        @if (p.totalElements > 0) {
+          <app-pagination
+            [page]="p.page"
+            [size]="p.size"
+            [totalElements]="p.totalElements"
+            [totalPages]="p.totalPages"
+            (pageChange)="irAPagina($event)"
+            (sizeChange)="cambiarTamano($event)"
+          />
+        }
+      }
+    }
+  </div>
+</section>

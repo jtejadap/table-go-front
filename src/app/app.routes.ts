@@ -13,6 +13,7 @@ import { ReservaFlow } from './user-features/components/reserva-flow/reserva-flo
 import { RestaurantesExplorer } from './user-features/components/restaurantes-explorer/restaurantes-explorer';
 import { ReservasGestion } from './recept-features/components/reservas-gestion/reservas-gestion';
 import { UsersAdmin } from './admin-features/components/users-admin/users-admin';
+import { MisReservas } from './user-features/components/mis-reservas/mis-reservas';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -49,6 +50,12 @@ export const routes: Routes = [
   {
     path: 'inicio',
     component: UserHome, 
+    canActivate: [roleGuard],
+    data: { roles: ['CLIENTE'] }
+  },
+   {
+    path: 'mis-reservas',
+    component: MisReservas, 
     canActivate: [roleGuard],
     data: { roles: ['CLIENTE'] }
   },
