@@ -1,0 +1,255 @@
+<div class="font-sans text-[#3a3f46] bg-white">
+
+  <!-- ===== Navbar ===== -->
+  <header
+    class="sticky top-0 z-10 flex items-center justify-between gap-4
+           px-4 sm:px-8 lg:px-16 py-4
+           bg-white/90 backdrop-blur border-b border-[#ece7e2]">
+    <a href="#inicio" class="flex items-center gap-2 no-underline text-[#1f2328] font-extrabold text-2xl">
+      <span class="text-3xl">🍽️</span>
+      <span>Table<span class="text-[#e85d2f]">Go</span></span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-7">
+      <a href="#funcionalidades" class="text-[#3a3f46] no-underline font-medium text-sm hover:text-[#e85d2f] transition-colors">Funcionalidades</a>
+      <a href="#como-funciona" class="text-[#3a3f46] no-underline font-medium text-sm hover:text-[#e85d2f] transition-colors">Cómo funciona</a>
+      <a href="#restaurantes" class="text-[#3a3f46] no-underline font-medium text-sm hover:text-[#e85d2f] transition-colors">Restaurantes</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a type="button" routerLink="/login"
+        class="hidden sm:inline-flex rounded-full px-5 py-2.5 text-sm font-semibold
+               text-[#3a3f46] bg-transparent hover:text-[#e85d2f] transition-colors">
+            Iniciar sesión
+    </a>
+    <a type="button" routerLink="/login"
+        class="rounded-full px-5 py-2.5 text-sm font-semibold text-white
+               bg-[#e85d2f] shadow-[0_8px_20px_rgba(232,93,47,0.35)]
+               hover:bg-[#c94a22] active:scale-[0.97] transition">
+        Crear cuenta
+    </a>
+    </div>
+  </header>
+
+  <main id="inicio">
+
+    <!-- ===== Hero ===== -->
+    <section
+      class="grid lg:grid-cols-[1.1fr_0.9fr] items-center gap-12
+             px-4 sm:px-8 lg:px-16 py-12 sm:py-20 lg:py-24">
+      <div class="max-w-2xl">
+        <span class="inline-block rounded-full bg-[#fdeae3] text-[#c94a22]
+                     text-[0.82rem] font-bold px-4 py-1.5 mb-5">
+          Reservas y pedidos en un solo lugar
+        </span>
+
+        <h1 class="text-[clamp(2.1rem,5vw,3.4rem)] leading-[1.12] tracking-tight
+                   text-[#1f2328] font-extrabold m-0 mb-5">
+          Reserva tu mesa y pide tus platos favoritos
+          <span class="text-[#e85d2f]">sin complicaciones</span>
+        </h1>
+
+        <p class="text-[clamp(1rem,1.6vw,1.2rem)] leading-relaxed text-[#6b7280] mb-8">
+          Table Go conecta clientes y restaurantes: descubre lugares cerca de ti,
+          reserva en segundos y arma tu pedido antes de llegar.
+        </p>
+
+        <div class="flex flex-wrap gap-4 mb-10">
+          <a type="button" routerLink="/login"
+            class="rounded-full px-7 py-3.5 text-[1.05rem] font-semibold text-white
+                   bg-[#e85d2f] shadow-[0_8px_20px_rgba(232,93,47,0.35)]
+                   hover:bg-[#c94a22] active:scale-[0.97] transition">
+            Reservar ahora
+        </a>
+          <a type="button" routerLink="/restaurante"
+            class="rounded-full px-7 py-3.5 text-[1.05rem] font-semibold
+                   text-[#1f2328] border-2 border-[#1f2328] bg-transparent
+                   hover:bg-[#1f2328] hover:text-white active:scale-[0.97] transition">
+            Soy restaurante
+          </a>
+        </div>
+
+        <div class="flex flex-wrap gap-10">
+          <div class="flex flex-col">
+            <strong class="text-2xl text-[#1f2328]">+2 min</strong>
+            <span class="text-sm text-[#6b7280]">para reservar</span>
+          </div>
+          <div class="flex flex-col">
+            <strong class="text-2xl text-[#1f2328]">100%</strong>
+            <span class="text-sm text-[#6b7280]">digital</span>
+          </div>
+          <div class="flex flex-col">
+            <strong class="text-2xl text-[#1f2328]">24/7</strong>
+            <span class="text-sm text-[#6b7280]">disponible</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div
+        aria-hidden="true"
+        class="relative min-h-[420px] rounded-[28px] overflow-hidden
+               border border-[#ece7e2] bg-[#faf7f4]
+               [background-image:radial-gradient(circle_at_30%_20%,#ffd9c9_0%,transparent_55%),radial-gradient(circle_at_80%_80%,#ffe9c7_0%,transparent_50%)]">
+        <div class="absolute top-[12%] left-[8%] flex items-center gap-3.5 bg-white rounded-[18px]
+                    px-5 py-4 shadow-[0_18px_45px_rgba(31,35,40,0.12)] animate-[flotar_5s_ease-in-out_infinite]">
+          <span class="text-2xl">📅</span>
+          <div>
+            <strong class="block text-[#1f2328] text-[0.95rem]">Reserva confirmada</strong>
+            <p class="mt-0.5 text-[0.82rem] text-[#6b7280]">Hoy · 8:00 p.m. · 4 personas</p>
+          </div>
+        </div>
+
+        <div class="absolute top-[45%] right-[6%] flex items-center gap-3.5 bg-white rounded-[18px]
+                    px-5 py-4 shadow-[0_18px_45px_rgba(31,35,40,0.12)]
+                    animate-[flotar_5s_ease-in-out_infinite] [animation-delay:1.2s]">
+          <span class="text-2xl">🍕</span>
+          <div>
+            <strong class="block text-[#1f2328] text-[0.95rem]">Tu pedido</strong>
+            <p class="mt-0.5 text-[0.82rem] text-[#6b7280]">Pizza margarita + 2 bebidas</p>
+          </div>
+        </div>
+
+        <div class="absolute bottom-[10%] left-[15%] flex items-center gap-3.5 bg-white rounded-[18px]
+                    px-5 py-4 shadow-[0_18px_45px_rgba(31,35,40,0.12)]
+                    animate-[flotar_5s_ease-in-out_infinite] [animation-delay:2.4s]">
+          <span class="text-2xl">📍</span>
+          <div>
+            <strong class="block text-[#1f2328] text-[0.95rem]">Restaurantes cerca</strong>
+            <p class="mt-0.5 text-[0.82rem] text-[#6b7280]">Resultados a 5 km a la redonda</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Funcionalidades ===== -->
+    <section id="funcionalidades" class="px-4 sm:px-8 lg:px-16 py-12 sm:py-20 lg:py-24">
+      <div class="max-w-3xl mx-auto mb-12 text-center">
+        <span class="inline-block text-[0.82rem] font-bold uppercase tracking-widest text-[#e85d2f] mb-3">
+          Funcionalidades
+        </span>
+        <h2 class="text-[clamp(1.7rem,3.5vw,2.5rem)] tracking-tight text-[#1f2328] font-extrabold m-0 mb-4">
+          Todo lo que necesitas para tu mesa
+        </h2>
+        <p class="text-[1.05rem] leading-relaxed text-[#6b7280] m-0">
+          Desde encontrar un restaurante hasta gestionar tus reservas, Table Go
+          reúne la experiencia completa en una sola app.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1150px] mx-auto">
+        @for (item of funcionalidades; track item.titulo) {
+          <article
+            class="bg-white border border-[#ece7e2] rounded-[18px] p-7
+                   transition duration-300
+                   hover:-translate-y-1.5 hover:shadow-[0_18px_45px_rgba(31,35,40,0.12)] hover:border-transparent">
+            <span class="inline-flex items-center justify-center w-13 h-13
+                         rounded-[14px] bg-[#fdeae3] text-[1.6rem] mb-4">
+              {{ item.icono }}
+            </span>
+            <h3 class="m-0 mb-2.5 text-[#1f2328] text-[1.15rem] font-bold">{{ item.titulo }}</h3>
+            <p class="m-0 text-[#6b7280] text-[0.95rem] leading-relaxed">{{ item.descripcion }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ===== Cómo funciona ===== -->
+    <section id="como-funciona" class="px-4 sm:px-8 lg:px-16 py-12 sm:py-20 lg:py-24 bg-[#faf7f4]">
+      <div class="max-w-3xl mx-auto mb-12 text-center">
+        <span class="inline-block text-[0.82rem] font-bold uppercase tracking-widest text-[#e85d2f] mb-3">
+          Cómo funciona
+        </span>
+        <h2 class="text-[clamp(1.7rem,3.5vw,2.5rem)] tracking-tight text-[#1f2328] font-extrabold m-0 mb-4">
+          Reserva en 4 pasos simples
+        </h2>
+      </div>
+
+      <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1100px] mx-auto list-none p-0">
+        @for (paso of pasos; track paso.numero) {
+          <li class="text-center p-6">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-full
+                         bg-[#e85d2f] text-white font-extrabold text-xl mb-4
+                         shadow-[0_8px_20px_rgba(232,93,47,0.3)]">
+              {{ paso.numero }}
+            </span>
+            <h3 class="m-0 mb-2 text-[#1f2328] text-[1.1rem] font-bold">{{ paso.titulo }}</h3>
+            <p class="m-0 text-[#6b7280] text-[0.95rem] leading-snug">{{ paso.descripcion }}</p>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <!-- ===== Dos experiencias ===== -->
+    <section id="restaurantes" class="px-4 sm:px-8 lg:px-16 py-12 sm:py-20 lg:py-24">
+      <div class="max-w-3xl mx-auto mb-12 text-center">
+        <span class="inline-block text-[0.82rem] font-bold uppercase tracking-widest text-[#e85d2f] mb-3">
+          Una app, dos experiencias
+        </span>
+        <h2 class="text-[clamp(1.7rem,3.5vw,2.5rem)] tracking-tight text-[#1f2328] font-extrabold m-0">
+          Pensada para clientes y restaurantes
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-7 max-w-[1050px] mx-auto">
+        <article class="rounded-[18px] p-9 bg-white border border-[#ece7e2]">
+          <h3 class="m-0 mb-5 text-[#1f2328] text-[1.3rem] font-bold">Para clientes</h3>
+          <ul class="m-0 pl-5 grid gap-2.5 list-disc marker:text-[#e85d2f]">
+            <li class="text-[#3a3f46] leading-snug">Busca restaurantes por nombre o ciudad.</li>
+            <li class="text-[#3a3f46] leading-snug">Encuentra lugares cerca con búsqueda por ubicación.</li>
+            <li class="text-[#3a3f46] leading-snug">Reserva mesa eligiendo fecha y hora.</li>
+            <li class="text-[#3a3f46] leading-snug">Arma tu pedido desde el menú del restaurante.</li>
+            <li class="text-[#3a3f46] leading-snug">Consulta, filtra y cancela tus reservas.</li>
+          </ul>
+        </article>
+
+        <article class="rounded-[18px] p-9 bg-[#1f2328] border border-[#1f2328]">
+          <h3 class="m-0 mb-5 text-white text-[1.3rem] font-bold">Para restaurantes</h3>
+          <ul class="m-0 pl-5 grid gap-2.5 list-disc marker:text-[#e85d2f]">
+            <li class="text-gray-300 leading-snug">Administra la información de tu restaurante.</li>
+            <li class="text-gray-300 leading-snug">Crea y organiza tu menú por categorías.</li>
+            <li class="text-gray-300 leading-snug">Controla la disponibilidad de cada plato.</li>
+            <li class="text-gray-300 leading-snug">Gestiona las reservas que recibes.</li>
+            <li class="text-gray-300 leading-snug">Todo desde un panel centralizado.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== CTA final ===== -->
+    <section class="text-center px-4 sm:px-8 lg:px-16 py-12 sm:py-20 lg:py-24 bg-[#faf7f4]
+                    [background-image:radial-gradient(circle_at_50%_0%,#fdeae3_0%,transparent_60%)]">
+      <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] text-[#1f2328] font-extrabold m-0 mb-3">
+        ¿Listo para tu próxima mesa?
+      </h2>
+      <p class="text-[#6b7280] text-[1.1rem] m-0 mb-8">
+        Únete a Table Go y reserva en segundos.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button type="button"
+          class="rounded-full px-7 py-3.5 text-[1.05rem] font-semibold text-white
+                 bg-[#e85d2f] shadow-[0_8px_20px_rgba(232,93,47,0.35)]
+                 hover:bg-[#c94a22] active:scale-[0.97] transition">
+          Crear cuenta gratis
+        </button>
+        <a type="button" routerLink="/restaurantes"
+          class="rounded-full px-7 py-3.5 text-[1.05rem] font-semibold
+                 text-[#1f2328] border-2 border-[#1f2328] bg-transparent
+                 hover:bg-[#1f2328] hover:text-white active:scale-[0.97] transition">
+          Ver restaurantes
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="flex flex-col items-center gap-3 px-4 py-8 border-t border-[#ece7e2] text-center">
+    <div class="flex items-center gap-2 font-extrabold text-xl text-[#1f2328]">
+      <span class="text-2xl">🍽️</span>
+      <span>Table<span class="text-[#e85d2f]">Go</span></span>
+    </div>
+    <p class="m-0 text-sm text-[#6b7280]">Reserva, pide y disfruta. © {{ anioActual }} Table Go.</p>
+  </footer>
+
+</div>

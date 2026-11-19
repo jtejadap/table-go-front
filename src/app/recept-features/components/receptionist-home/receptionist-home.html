@@ -1,1 +1,160 @@
-<p>receptionist-home works!</p>
+<section class="mx-auto max-w-4xl space-y-6 p-4 text-slate-800">
+  <!-- Encabezado -->
+  <div class="border-b border-slate-200 pb-4">
+    <h2 class="text-xl font-bold text-slate-900">Guía de estados de una reserva</h2>
+    <p class="mt-1 text-sm text-slate-600">
+      Consulta qué significa cada estado, qué puedes hacer en recepción y hacia dónde puede avanzar.
+    </p>
+  </div>
+
+  <!-- Flujo principal -->
+  <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <p class="mb-3 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+      Flujo habitual de atención
+    </p>
+    <div class="flex flex-wrap items-center gap-2 text-xs font-medium">
+      <span class="rounded-full bg-amber-100 px-3 py-1 text-amber-800 ring-1 ring-amber-200">
+        Pendiente
+      </span>
+      <span class="text-slate-400">→</span>
+      <span class="rounded-full bg-sky-100 px-3 py-1 text-sky-800 ring-1 ring-sky-200">
+        Confirmada
+      </span>
+      <span class="text-slate-400">→</span>
+      <span class="rounded-full bg-indigo-100 px-3 py-1 text-indigo-800 ring-1 ring-indigo-200">
+        En curso
+      </span>
+      <span class="text-slate-400">→</span>
+      <span class="rounded-full bg-emerald-100 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200">
+        Completada
+      </span>
+    </div>
+  </div>
+
+  <!-- Detalle de cada estado -->
+  <div class="grid gap-4 md:grid-cols-2">
+    <!-- PENDIENTE -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 ring-1 ring-amber-200">
+          PENDIENTE
+        </span>
+        <span class="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+          Editable por cliente
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        La reserva fue creada, pero aún no está asegurada. Requiere revisión o validación.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> pasar a
+        <span class="font-medium text-sky-700">Confirmada</span> o a
+        <span class="font-medium text-rose-700">Cancelada</span>.
+      </p>
+    </article>
+
+    <!-- CONFIRMADA -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800 ring-1 ring-sky-200">
+          CONFIRMADA
+        </span>
+        <span class="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+          Editable por cliente
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        La reserva está validada y el espacio está previsto para el cliente a la hora acordada.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> pasar a
+        <span class="font-medium text-indigo-700">En curso</span> cuando llegue, o a
+        <span class="font-medium text-rose-700">Cancelada</span> /
+        <span class="font-medium text-orange-700">No show</span> si no se concreta.
+      </p>
+    </article>
+
+    <!-- EN_CURSO -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800 ring-1 ring-indigo-200">
+          EN CURSO
+        </span>
+        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+          No editable por cliente
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        El cliente ya llegó y la atención o servicio se está realizando en este momento.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> únicamente puede pasar a
+        <span class="font-medium text-emerald-700">Completada</span> al finalizar.
+      </p>
+    </article>
+
+    <!-- COMPLETADA -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
+          COMPLETADA
+        </span>
+        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+          Estado final
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        La reserva concluyó con éxito y el servicio fue atendido por completo.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> ninguno, ya no cambia de estado.
+      </p>
+    </article>
+
+    <!-- CANCELADA -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800 ring-1 ring-rose-200">
+          CANCELADA
+        </span>
+        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+          Estado final
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        La reserva fue anulada antes de iniciar (desde <strong>Pendiente</strong> o <strong>Confirmada</strong>).
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> ninguno, queda cerrada como cancelada.
+      </p>
+    </article>
+
+    <!-- NO_SHOW -->
+    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <div class="flex items-center justify-between gap-2">
+        <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800 ring-1 ring-orange-200">
+          NO SHOW
+        </span>
+        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+          Estado final
+        </span>
+      </div>
+      <p class="mt-3 text-sm text-slate-700">
+        La reserva estaba <strong>Confirmada</strong>, pero el cliente no se presentó y no avisó para cancelar.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">
+        <strong class="font-semibold text-slate-700">Siguiente paso:</strong> ninguno, es un estado de cierre.
+      </p>
+    </article>
+  </div>
+
+  <!-- Nota clave para recepción -->
+  <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-4 text-sm text-amber-950">
+    <p class="font-semibold">Reglas rápidas para recepción:</p>
+    <ul class="mt-1.5 list-disc space-y-1 pl-5 text-xs sm:text-sm">
+      <li>El cliente solo puede modificar su pedido mientras esté en <strong>Pendiente</strong> o <strong>Confirmada</strong>.</li>
+      <li>Una vez que la reserva está <strong>En curso</strong>, no puede cancelarse ni marcarse como <em>No show</em>; solo pasar a <strong>Completada</strong>.</li>
+      <li><strong>Completada</strong>, <strong>Cancelada</strong> y <strong>No show</strong> son estados finales.</li>
+    </ul>
+  </div>
+</section>
