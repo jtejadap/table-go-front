@@ -1,0 +1,8 @@
+<app-navbar [(toggled)]="toggled" />
+
+<main
+  class="mx-6 block pt-20 transition-[padding] duration-300 lg:pt-32"
+  [class]="toggled() ? 'lg:pl-[114px]' : 'lg:pl-[340px]'"
+>
+  <router-outlet />
+</main>

@@ -14,75 +14,84 @@ import { RestaurantesExplorer } from './user-features/components/restaurantes-ex
 import { ReservasGestion } from './recept-features/components/reservas-gestion/reservas-gestion';
 import { UsersAdmin } from './admin-features/components/users-admin/users-admin';
 import { MisReservas } from './user-features/components/mis-reservas/mis-reservas';
+import { AppLayout } from './components/app-layout/app-layout';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
   {
-    path: 'admin',
-    component: AdminHome,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] } // Roles permitidos
+  path: '',
+  component: AppLayout,
+  canActivate: [roleGuard],
+  children: [
+    {
+      path: 'admin',
+      component: AdminHome,
+      canActivate: [roleGuard],
+      data: { roles: ['ADMINISTRADOR'] } // Roles permitidos
+    },
+    {
+      path: 'restaurante',
+      component: MyRestaurant,
+      canActivate: [roleGuard],
+      data: { roles: ['ADMINISTRADOR'] } 
+    },
+    {
+      path: 'menu',
+      component: ProductoAdmin,
+      canActivate: [roleGuard],
+      data: { roles: ['ADMINISTRADOR'] }
+    },
+    {
+      path: 'mesas',
+      component: MesaAdmin,
+      canActivate: [roleGuard],
+      data: { roles: ['ADMINISTRADOR'] } 
+    },
+    {
+      path: 'staff',
+      component: UsersAdmin,
+      canActivate: [roleGuard],
+      data: { roles: ['ADMINISTRADOR'] } 
+    },
+    {
+      path: 'inicio',
+      component: UserHome, 
+      canActivate: [roleGuard],
+      data: { roles: ['CLIENTE'] }
+    },
+    {
+      path: 'mis-reservas',
+      component: MisReservas, 
+      canActivate: [roleGuard],
+      data: { roles: ['CLIENTE'] }
+    },
+    {
+      path: 'restaurantes/:id',
+      component: ReservaFlow, 
+      canActivate: [roleGuard],
+      data: { roles: ['CLIENTE'] }
+    },
+    {
+      path: 'restaurantes',
+      component: RestaurantesExplorer, 
+      canActivate: [roleGuard],
+      data: { roles: ['CLIENTE'] }
+    },  
+    {
+      path: 'recepcion',
+      component: ReceptionistHome, 
+      canActivate: [roleGuard],
+      data: { roles: ['RECEPCIONISTA'] }
+    },
+    {
+      path: 'reservas',
+      component: ReservasGestion, 
+      canActivate: [roleGuard],
+      data: { roles: ['RECEPCIONISTA'] }
+    },    
+    ],
   },
-  {
-    path: 'restaurante',
-    component: MyRestaurant,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] } 
-  },
-  {
-    path: 'productos',
-    component: ProductoAdmin,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] }
-  },
-  {
-    path: 'mesas',
-    component: MesaAdmin,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] } 
-  },
-   {
-    path: 'staff',
-    component: UsersAdmin,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] } 
-  },
-  {
-    path: 'inicio',
-    component: UserHome, 
-    canActivate: [roleGuard],
-    data: { roles: ['CLIENTE'] }
-  },
-   {
-    path: 'mis-reservas',
-    component: MisReservas, 
-    canActivate: [roleGuard],
-    data: { roles: ['CLIENTE'] }
-  },
-  {
-    path: 'restaurantes/:id',
-    component: ReservaFlow, 
-    canActivate: [roleGuard],
-    data: { roles: ['CLIENTE'] }
-  },
-  {
-    path: 'restaurantes',
-    component: RestaurantesExplorer, 
-    canActivate: [roleGuard],
-    data: { roles: ['CLIENTE'] }
-  },  
-  {
-    path: 'recepcion',
-    component: ReceptionistHome, 
-    canActivate: [roleGuard],
-    data: { roles: ['RECEPCIONISTA'] }
-  },
-  {
-    path: 'reservas',
-    component: ReservasGestion, 
-    canActivate: [roleGuard],
-    data: { roles: ['RECEPCIONISTA'] }
-  },
+  
   {
     path: 'unauthorized',
     component: Unauthorized // Componente que muestra un mensaje de acceso denegado
