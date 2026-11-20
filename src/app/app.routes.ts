@@ -9,6 +9,7 @@ import { Login } from './components/login/login';
 import { MyRestaurant } from './admin-features/components/my-restaurant/my-restaurant';
 import { ProductoAdmin } from './admin-features/components/producto-admin/producto-admin';
 import { MesaAdmin } from './admin-features/components/mesa-admin/mesa-admin';
+import { OptimizacionAdmin } from './admin-features/components/optimizacion-admin/optimizacion-admin';
 import { ReservaFlow } from './user-features/components/reserva-flow/reserva-flow';
 import { RestaurantesExplorer } from './user-features/components/restaurantes-explorer/restaurantes-explorer';
 import { ReservasGestion } from './recept-features/components/reservas-gestion/reservas-gestion';
@@ -34,6 +35,7 @@ export const routes: Routes = [
       { path: 'restaurante', component: MyRestaurant,        canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'menu',        component: ProductoAdmin,       canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'mesas',       component: MesaAdmin,           canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
+      { path: 'optimizacion', component: OptimizacionAdmin, canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'staff',       component: UsersAdmin,          canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'inicio',      component: UserHome,            canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
       { path: 'mis-reservas',component: MisReservas,         canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },

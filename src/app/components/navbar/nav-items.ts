@@ -27,6 +27,7 @@ export const NAV_BY_ROLE: Record<string, NavSection[]> = {
         { label: 'Staff', icon: 'ri-group-fill', route: '/staff' },
         { label: 'Mesas', icon: 'ri-table-fill', route: '/mesas' },
         { label: 'Menú', icon: 'ri-restaurant-fill', route: '/menu' },
+        { label: 'Optimización', icon: 'ri-line-chart-fill', route: '/optimizacion' },
       ],
     },    
   ],
