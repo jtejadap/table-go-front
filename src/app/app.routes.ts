@@ -17,6 +17,7 @@ import { UsersAdmin } from './admin-features/components/users-admin/users-admin'
 import { MisReservas } from './user-features/components/mis-reservas/mis-reservas';
 import { AppLayout } from './components/app-layout/app-layout';
 import { LandingPage } from './components/landing-page/landing-page';
+import { Chatbot } from './user-features/components/chatbot/chatbot';
 
 export const routes: Routes = [
   // 1) La landing es lo primero que ve el usuario en "/"
@@ -37,8 +38,8 @@ export const routes: Routes = [
       { path: 'mesas',       component: MesaAdmin,           canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'optimizacion', component: OptimizacionAdmin, canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
       { path: 'staff',       component: UsersAdmin,          canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR'] } },
-      { path: 'inicio',      component: UserHome,            canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
-      { path: 'mis-reservas',component: MisReservas,         canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
+      { path: 'inicio',      component: Chatbot,             canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
+      { path: 'mis-reservas',component: MisReservas,         canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },      
       { path: 'restaurantes/:id', component: ReservaFlow,    canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
       { path: 'restaurantes',component: RestaurantesExplorer,canActivate: [roleGuard], data: { roles: ['CLIENTE'] } },
       { path: 'recepcion',   component: ReceptionistHome,    canActivate: [roleGuard], data: { roles: ['RECEPCIONISTA'] } },

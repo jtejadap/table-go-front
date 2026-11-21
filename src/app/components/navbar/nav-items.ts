@@ -46,7 +46,7 @@ export const NAV_BY_ROLE: Record<string, NavSection[]> = {
     {
       title: 'ADMINISTRAR',
       items: [
-        { label: 'Inicio', icon: 'ri-pie-chart-2-fill', route: '/inicio', exact: true },
+        { label: 'Asistente', icon: 'ri-chat-smile-3-fill', route: '/inicio', exact: true },
         { label: 'Hacer Reserva', icon: 'ri-add-circle-fill', route: '/restaurantes' },
         { label: 'Ver Mis Reservas', icon: 'ri-calendar-fill', route: '/mis-reservas' },
       ],
